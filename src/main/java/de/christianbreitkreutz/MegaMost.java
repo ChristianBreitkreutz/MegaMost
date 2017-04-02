@@ -2,8 +2,8 @@ package de.christianbreitkreutz;
 
 import java.util.HashMap;
 
+import javax.inject.Inject;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
@@ -20,7 +20,9 @@ public class MegaMost {
     private final String userName;
     private final String iconUrl;
 
-    private MegaMost(final Builder builder) {
+    @Inject private MegaMostClientBuilder megaMostClientBuilder;
+    
+    public MegaMost(final Builder builder) {
         this.userName = builder.userName;
         this.iconUrl = builder.iconUrl;
 
@@ -48,7 +50,7 @@ public class MegaMost {
     }
 
     private javax.ws.rs.client.Invocation.Builder buildRequest() {
-        Client client = ClientBuilder.newClient();
+        Client client = megaMostClientBuilder.newClient();
         WebTarget webTarget = client.target(endpointUri);
         javax.ws.rs.client.Invocation.Builder builder = webTarget
                 .request(MediaType.APPLICATION_JSON + "; charset=utf-8")//
@@ -85,6 +87,8 @@ public class MegaMost {
         private int port = UriPort.HTTPS;
         private String iconUrl;
         private String userName;
+
+        @Inject MegaMostClientBuilder megaMostClientBuilder;
 
         public Builder(final String host, final String mattermostKey) {
             this.host = host;
