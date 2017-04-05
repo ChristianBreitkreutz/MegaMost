@@ -8,7 +8,8 @@ repositories {
 dependencies {
     compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet-core', version: '2.26-b03'
     compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
-    
+
     testCompile "org.mockito:mockito-core:2.0.57-beta" 
     testCompile group: 'junit', name: 'junit', version: '4.+'
+    testCompile "com.github.tomakehurst:wiremock:2.5.1"
 }

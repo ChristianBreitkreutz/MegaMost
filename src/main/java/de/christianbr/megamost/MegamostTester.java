@@ -1,8 +1,12 @@
 package de.christianbr.megamost;
 
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 import de.christianbreitkreutz.MegaMostExeption;
-import de.christianbreitkreutz.test.C;
+import de.christianbreitkreutz.test.A;
+import de.christianbreitkreutz.test.AModule;
 
 public class MegamostTester {
 
@@ -16,8 +20,9 @@ public class MegamostTester {
 //                .build();
 //        megatech.sendMessage("hello world");
 
-        C c = new C();
-        c.wurst();
+    	 Injector injector = Guice.createInjector(new AModule());
+    	 A a = injector.getInstance(A.class);
+    	 System.out.println(a.drink(1));
     }
 
 }
