@@ -8,6 +8,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,10 +29,10 @@ public class MegaMostTest {
     public WireMockRule wireMockRule = new WireMockRule(WIREMOCK_PORT);
 
     @Test
-    public void testStuff() throws MegaMostExeption {
+    public void normalCall() throws MegaMostExeption, UnsupportedEncodingException {
+
         stubFor(post(urlEqualTo("/hooks/matterMostID123")).willReturn(aResponse().withStatus(200)));
 
-        // MegaMost sut = Builder;
         MegaMost sut = new MegaMost.Builder("localhost", "matterMostID123")//
                 .icon("iconUrl")//
                 .port(WIREMOCK_PORT)//
@@ -36,15 +40,15 @@ public class MegaMostTest {
                 .useName("hans")//
                 .build();
 
-        sut.sendMessage("ExampleMessage");
+        sut.sendMessage("Example Message");
 
         verify(
-                postRequestedFor(urlMatching(".*hooks.*"))//
-                .withUrl("/hooks/matterMostID123")
-                .withRequestBody( containing("username%22%3A%22hans") )
-                .withRequestBody( containing("icon_url%22%3A%22iconUrl") )
-                .withRequestBody( containing("text%22%3A%22ExampleMessage") )
-                
+                postRequestedFor(urlMatching("/hooks/matterMostID123"))//
+                .withRequestBody( containing("payload="+URLEncoder.encode("{", "UTF-8")) )//
+                .withRequestBody( containing(URLEncoder.encode("\"username\":\"hans\"", "UTF-8")) )//
+                .withRequestBody( containing(URLEncoder.encode("\"icon_url\":\"iconUrl\"", "UTF-8")) )//
+                .withRequestBody( containing(URLEncoder.encode("\"text\":\"Example Message\"", "UTF-8")) )//
         );
     }
+
 }
