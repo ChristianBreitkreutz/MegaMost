@@ -20,20 +20,16 @@ public class MegaMost {
     private final String userName;
     private final String iconUrl;
 
-    private MegaMostClientBuilder megaMostClientBuilder;
-    
     public MegaMost(final Builder builder) {
         this.userName = builder.userName;
         this.iconUrl = builder.iconUrl;
-        this.megaMostClientBuilder = builder.megaMostClientBuilder;
 
-        endpointUri = UriBuilder.fromUri("{scheme}://{host}:{port}/hooks/{mattermostKey}")//TODO: add /hooks
+        endpointUri = UriBuilder.fromUri("{scheme}://{host}:{port}/hooks/{mattermostKey}")
                 .resolveTemplate("scheme", builder.scheme)//
                 .resolveTemplate("host", builder.host)//
                 .resolveTemplate("port", builder.port)//
                 .resolveTemplate("mattermostKey", builder.mattermostKey//
         );
-
     }
 
     public void sendMessage(final String message) throws MegaMostExeption {
@@ -42,9 +38,9 @@ public class MegaMost {
 
         if (response == null || response.getStatusInfo().getFamily() != Response.Status.Family.SUCCESSFUL) {
             throw new MegaMostExeption(message //
-                    , response.getStatus()//
-                    , response.getHeaders().toString()//
-                    , response.readEntity(String.class)//
+                    ,response.getStatus()//
+                    ,response.getHeaders().toString()//
+                    ,response.readEntity(String.class)//
             );
         }
     }
@@ -87,7 +83,6 @@ public class MegaMost {
         private int port = UriPort.HTTPS;
         private String iconUrl;
         private String userName;
-        private MegaMostClientBuilder megaMostClientBuilder = new MegaMostClientBuilder();
 
         public Builder(final String host, final String mattermostKey) {
             this.host = host;
@@ -97,11 +92,6 @@ public class MegaMost {
         public Builder scheme(final String scheme) {
             this.scheme = scheme;
             return this;
-        }
-
-        public Builder setClientBuilder(final MegaMostClientBuilder megaMostClientBuilder) {
-        	this.megaMostClientBuilder = megaMostClientBuilder;
-        	return this;
         }
 
         public Builder port(final int port) {
